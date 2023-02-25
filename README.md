@@ -1,6 +1,6 @@
 # Terraform Cheat Sheet
 
-We created this Terraform Cheat Sheet initially for students of our DevOps Bootcamp: Terraform. But we're now sharing it with any and all Developers that want to learn and remember some of the key functions and concepts of Terraform, and have a quick reference guide to the basics of Terraform.
+I created this Terraform Cheat Sheet for all Developers that want to learn and remember some of the key functions and concepts of Terraform, and have a quick reference guide to the basics of Terraform.
 
 
 ## Table of Contents
