@@ -586,6 +586,52 @@ resource "aws_default_security_group" "default_sec_group" {
 }
 ```
 
+A second example
+```terraform
+variable "security_group_rules" {
+  type = map(object({
+    type        = string
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  
+  default = {
+    "ssh" = {
+      type        = "ssh"
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    "http" = {
+      type        = "http"
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+}
+
+#use it now
+resource "aws_security_group" "example" {
+  dynamic "ingress" {
+    for_each = var.security_group_rules
+    content {
+      type        = ingress.value.type
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
+  }
+}
+
+
+```
+
 ### Conditional Expressions
 A `conditional expression` uses the value of a boolean expression to select one of two values.
 
