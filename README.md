@@ -509,6 +509,26 @@ resource "aws_iam_user" "user" {
   name = each.key
 }
 ```
+
+Second example
+```hcl
+variable "example_map" {
+  type = map(string)
+  default = {
+    "key1" = "value1"
+    "key2" = "value2"
+    "key3" = "value3"
+  }
+}
+
+#use the var 
+resource "aws_s3_bucket" "example" {
+  for_each = var.example_map
+  
+  bucket = each.key
+}
+
+```
 #### For Expressions
 A `for` expression creates a complex type value by transforming another complex type value.
 
