@@ -535,7 +535,7 @@ A `for` expression creates a complex type value by transforming another complex 
 ```hcl
 variable "names" {
     type = list
-    default = ["daniel", "ada'", "john"]
+    default = ["daniel", "ada'", "john wick"]
 }
 output "short_upper_names" {
   # filter the resulting list by specifying a condition:
@@ -707,6 +707,51 @@ resource "aws_internet_gateway" "dev_igw" {
 }
 ```
 **Note:** Local values are created by a locals block (plural), but you reference them as attributes on an object named local (singular).
+
+### Terraform provisioners
+
+Terraform Provisioners are used to execute scripts or commands on a resource after it has been created or destroyed. Provisioners are typically used to configure a newly created resource, such as `installing software` or executing a `post-creation` script. In Terraform, there are two types of provisioners:
+
+`Local-exec Provisioner`: This provisioner is used to execute commands on the machine running Terraform.
+
+Example
+```hcl
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+
+  provisioner "local-exec" {
+    command = "echo ${aws_instance.example.private_ip} > private_ip.txt"
+  }
+}
+```
+
+`Remote-exec Provisioner`: This provisioner is used to execute commands on the newly created resource.
+```hcl
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  
+  key_name = "my_key_pair"
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y nginx",
+      "sudo service nginx start"
+    ]
+
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key = file("~/.ssh/my_key_pair.pem")
+      host     = aws_instance.example.public_ip
+    }
+  }
+}
+
+```
+
 
 ### Built-in Functions
 
